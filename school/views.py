@@ -18,7 +18,7 @@ def teacher_form(request):
         teacher = form.save()
         selected_groups = form.cleaned_data["groups"]
         teacher.groups.set(selected_groups)
-        return redirect(reverse("teacher_edit", kwargs={"pk": teacher.pk}))
+        return redirect(reverse("teacher_list"))
 
     return render(request, "teacher_edit.html", {"form": form})
 
@@ -47,7 +47,7 @@ def teacher_delete(request, pk):
     try:
         teacher = Teachers.objects.get(pk=pk)
         teacher.delete()
-        return redirect("teacher_list")
+        return redirect(reverse("teacher_list"))
     except ProtectedError:
         message = "Цей вчитель має зв'язки і не може бути видалений."
         return HttpResponse(message, status=400)
@@ -71,7 +71,7 @@ def group_form(request):
             group.teacher = teacher
             group.save()
 
-        return redirect("group_list")
+        return redirect(reverse("group_list"))
 
     return render(request, "group_form.html", {"form": form})
 
@@ -100,7 +100,7 @@ def group_delete(request, pk):
     try:
         group = Groups.objects.get(pk=pk)
         group.delete()
-        return redirect("group_list")
+        return redirect(reverse("group_list"))
     except ProtectedError:
         message = "Ця група має зв'язки і не може бути видалена."
         return HttpResponse(message, status=400)
@@ -113,7 +113,7 @@ def student_form(request):
     form = StudentForm(request.POST)
     if form.is_valid():
         form.save()
-        return redirect(reverse("student_edit", args=[form.instance.pk]))
+        return redirect(reverse("student_list"))
 
     return render(request, "student_form.html", {"form": form})
 
@@ -140,7 +140,7 @@ def student_delete(request, pk):
     try:
         student = Students.objects.get(pk=pk)
         student.delete()
-        return redirect("student_list")
+        return redirect(reverse("student_list"))
     except ProtectedError:
         message = "Цей студент має зв'язки і не може бути видалений."
         return HttpResponse(message, status=400)
